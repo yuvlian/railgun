@@ -1,5 +1,5 @@
+use common::time::get_duration_since_unix;
 use std::fmt::Write;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 const EXPIRE_AFTER_MINUTES: u64 = 2;
 
@@ -15,7 +15,7 @@ pub fn generate_token() -> String {
         write!(token, "{:02x}", byte).unwrap();
     }
 
-    let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
+    let now = get_duration_since_unix();
     let expiry_minutes = now.as_secs() / 60 + EXPIRE_AFTER_MINUTES;
 
     format!("{}+{}", token, expiry_minutes)
@@ -29,10 +29,6 @@ pub fn should_refresh_token(token: &str) -> Result<bool, &'static str> {
     let Ok(expiry_minutes) = parts[1].parse::<u64>() else {
         return Err("Invalid token format");
     };
-    let current_minutes = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_secs()
-        / 60;
+    let current_minutes = get_duration_since_unix().as_secs() / 60;
     Ok(current_minutes >= expiry_minutes)
 }

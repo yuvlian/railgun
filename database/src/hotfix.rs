@@ -1,4 +1,4 @@
-use mongodb::{Collection, Database, bson::doc, error::Result};
+use mongodb::{Collection, Database, bson::doc, error::Result, options::ReplaceOptions};
 use serde::{Deserialize, Serialize};
 
 const HOTFIX_COLL_NAME: &str = "hotfix";
@@ -20,11 +20,6 @@ impl HotfixDoc {
         db.collection::<Self>(HOTFIX_COLL_NAME)
     }
 
-    pub async fn insert_to_collection(&self, collection: &Collection<Self>) -> Result<()> {
-        collection.insert_one(self).await?;
-        Ok(())
-    }
-
     pub async fn fetch_by_version(
         collection: &Collection<Self>,
         version: &str,
@@ -34,9 +29,13 @@ impl HotfixDoc {
         Ok(result)
     }
 
-    pub async fn replace_in_collection(&self, collection: &Collection<Self>) -> Result<()> {
+    pub async fn upsert_to_collection(&self, collection: &Collection<Self>) -> Result<()> {
         let filter = doc! { "_id": &self.version };
-        collection.replace_one(filter, self).await?;
+        let options = ReplaceOptions::builder().upsert(true).build();
+        collection
+            .replace_one(filter, self)
+            .with_options(options)
+            .await?;
         Ok(())
     }
 }

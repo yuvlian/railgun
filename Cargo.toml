@@ -8,7 +8,8 @@ license = "MIT"
 repository = "https://github.com/yuvlian/railgun"
 
 [workspace.dependencies]
-actix-web = "4.11.0"
+actix-cors = "0.7.1"
+actix-web = { version = "4.11.0", features = ["openssl"] }
 ansi_term = "0.12.1"
 bcrypt = "0.17.0"
 byteorder = "1.5.0"
@@ -17,6 +18,7 @@ database = { path = "database/" }
 fastrand = "2.3.0"
 heck = "0.5.0"
 mongodb = { version = "3.2.3", features = ["snappy-compression"] }
+openssl = { version = "0.10.73", features = ["vendored"] }
 prost = "0.13.5"
 prost-build = "0.13.5"
 rbase64 = "2.0.3"

@@ -49,8 +49,8 @@ pub async fn get_query_gateway(
                     }
                 }
             };
-            if let Err(e) = hf2.insert_to_collection(&hf_coll).await {
-                tracing::error!("Inserting HotfixDoc: {}", e);
+            if let Err(e) = hf2.upsert_to_collection(&hf_coll).await {
+                tracing::error!("Upserting HotfixDoc: {}", e);
             }
             hf2
         }
@@ -89,7 +89,7 @@ pub async fn get_query_dispatch() -> impl Responder {
             title: DISPATCH_REGION_NAME.to_string(),
             env_type: DISPATCH_ENV_TYPE.to_string(),
             dispatch_url: format!(
-                "http://{}:{}/query_gateway",
+                "https://{}:{}/query_gateway",
                 DISPATCH_BIND_TARGET.0, DISPATCH_BIND_TARGET.1
             ),
             ..Default::default()

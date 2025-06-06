@@ -2,6 +2,7 @@ pub mod packet;
 pub mod proto;
 pub mod resource;
 pub mod server_config;
+pub mod time;
 
 pub fn init_tracing() {
     #[cfg(target_os = "windows")]

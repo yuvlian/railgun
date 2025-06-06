@@ -2,6 +2,7 @@ pub use mongodb::Client as MongoClient;
 
 pub mod account;
 pub mod hotfix;
+pub mod srtools;
 
 const MONGODB_CONNECTION_URI: &str = "mongodb://localhost:27017";
 pub const DB_NAME: &str = "railgun";
