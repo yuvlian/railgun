@@ -31,7 +31,6 @@ struct SRToolSyncRequest {
     data: Option<SRToolsData>,
 }
 
-// TODO: figure out how to handle connect post!!
 #[post("/srtools/sync")]
 pub async fn post_sync(
     request: web::Json<SRToolSyncRequest>,
@@ -80,7 +79,6 @@ pub async fn post_sync(
     };
 
     let now_minutes = (get_duration_since_unix().as_secs() / 60) as u32;
-
     if meta.next_sync_allowed > now_minutes {
         return HttpResponse::TooManyRequests().body(format!(
             r#"{{"status":429,"message":"sync is on cooldown for {} more minutes"}}"#,
@@ -88,16 +86,16 @@ pub async fn post_sync(
         ));
     }
 
-    if let Err(e) =
-        SRToolsMetaDoc::update_next_sync_for_username(&stm_coll, &request.username).await
-    {
-        tracing::error!("Updating next sync: {}", e);
-    }
-
     if let Some(v) = &request.data {
         let st_coll = SRToolsDoc::get_collection(&db);
         if let Err(e) = SRToolsDoc::set_srtools_by_username(&st_coll, &request.username, v).await {
             tracing::error!("Setting srtoolsdata by username: {}", e);
+        }
+
+        if let Err(e) =
+            SRToolsMetaDoc::update_next_sync_for_username(&stm_coll, &request.username).await
+        {
+            tracing::error!("Updating next sync: {}", e);
         }
     }
 
