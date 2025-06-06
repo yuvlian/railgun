@@ -1,0 +1,9 @@
+# rust stuff
+**/target
+**/*.lock
+
+# resource
+**/Config
+**/ExcelOutput
+**/_.rs
+**/cmd.rs
